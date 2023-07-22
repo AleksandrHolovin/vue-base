@@ -1,10 +1,40 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div id="app">
+    <h1>Todo list</h1>
+    <router-view />
+  </div>
 </template>
+
+<script lang="ts">
+import TodoList from "@/components/TodoList.vue";
+import AddTodo from '@/components/AddTodo.vue';
+
+export default {
+  name: "app",
+  components: {
+    TodoList,
+    AddTodo,
+  },
+  methods: {
+    removeTodo(id: number) {
+      this.todoItems = this.todoItems.filter(todo => todo.id != id)
+    },
+    addTodo(newTodo: any) {
+      this.todoItems = [...this.todoItems, newTodo]
+    }
+  },
+  mounted() {
+    fetch('https://jsonplaceholder.typicode.com/todos?_limit=3')
+      .then(response => response.json())
+      .then(json => this.todoItems = json)
+  },
+  data() {
+    return {
+      todoItems: [] as any[]
+    }
+  }
+};
+</script>
 
 <style>
 #app {
@@ -13,18 +43,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
